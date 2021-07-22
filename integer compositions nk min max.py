@@ -1,5 +1,5 @@
 def constrained_compositions(n, k, min_elem, max_elem, equiv=12):
-    allowed = range(max_elem, min_elem-1, -1)
+    allowed = range(min_elem, max_elem+1)
 
     def update_sum(s, v, t):
         if len(t)==0:
@@ -30,7 +30,10 @@ for p in constrained_compositions(12, 3, 3, 7):
     print(p)
 '''
 
-f = open('comp_of_72.txt', 'w')
-for p in constrained_compositions(72, 12, 1, 11):
+f = open('comp_of_24.txt', 'w')
+counter = 0
+for p in constrained_compositions(24, 12, 1, 11):
     f.write(f'{p}\n')
+    counter+=1
+f.write(f'\nNUMBER OF SERIES: {counter}')
 f.close()

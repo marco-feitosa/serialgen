@@ -30,5 +30,7 @@ for p in constrained_compositions(12, 3, 3, 7):
     print(p)
 '''
 
+f = open('comp_of_72.txt', 'w')
 for p in constrained_compositions(72, 12, 1, 11):
-    print(p)
+    f.write(f'{p}\n')
+f.close()

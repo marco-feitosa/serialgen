@@ -13,7 +13,7 @@ def retrograde_inversion(series):
     result[0:11] = result[0:11][::-1]
     return result
 
-def lowest_by(pairs):
+def lowest_by_snd(pairs):
     val = None
     result = None 
     for x in pairs:
@@ -27,16 +27,45 @@ def lowest_by(pairs):
             result.append(x)
     return result
 
-def schoenberg_normalization(series):
-    forms = [series, inversion(series), retrograde(series), retrograde_inversion(series)]
+def most_compact(forms):
     for b in range(12, 0, -1):
         sums = [(x, sum(x[0:b])) for x in forms]
-        candidates = lowest_by(sums)
+        candidates = lowest_by_snd(sums)
         if len(candidates) == 1:
             return candidates[0][0]
         else:
             forms = [x[0] for x in candidates]
     return min(forms, key=sum)
+
+def tr_normalization(series):
+    forms = [series, retrograde(series)]
+    return most_compact(forms)
+
+def tir_normalization(series):
+    forms = [series, inversion(series), retrograde(series), retrograde_inversion(series)]
+    return most_compact(forms)
+
+def ts_normalization(series):
+    forms = rotations(series)
+    return most_compact(forms)
+
+def tis_normalization(series):
+    forms = with_rotations([series, inversion(series)])
+    return most_compact(forms)
+
+def tisr_normalization(series):
+    forms = with_rotations([series, inversion(series), retrograde(series), retrograde_inversion(series)])
+    return most_compact(forms)
+
+def rotations(x):
+    result = []
+    for i in range(len(x)):
+        b = x[i:] + x[:i]
+        result.append(b)
+    return result
+
+def with_rotations(forms):
+    return [x for y in forms for x in rotations(y)]
 
 def read_series(line):
     try:
@@ -45,7 +74,11 @@ def read_series(line):
         return None
 
 methods = {
-  "schoenberg": schoenberg_normalization
+  "tr": tr_normalization,
+  "tir": tir_normalization,
+  "ts": ts_normalization,
+  "tis": tis_normalization,
+  "tisr": tisr_normalization
 }
 
 def classify_from_file(method_name, file):

@@ -13,6 +13,19 @@ def retrograde_inversion(series):
     result[0:11] = result[0:11][::-1]
     return result
 
+def quart_circle(series):
+    return [(5 * x) % 12 for x in series]
+
+def rotations(x):
+    result = []
+    for i in range(len(x)):
+        b = x[i:] + x[:i]
+        result.append(b)
+    return result
+
+def with_rotations(forms):
+    return [x for y in forms for x in rotations(y)]
+
 def lowest_by_snd(pairs):
     val = None
     result = None 
@@ -57,15 +70,16 @@ def tisr_normalization(series):
     forms = with_rotations([series, inversion(series), retrograde(series), retrograde_inversion(series)])
     return most_compact(forms)
 
-def rotations(x):
-    result = []
-    for i in range(len(x)):
-        b = x[i:] + x[:i]
-        result.append(b)
-    return result
+def tisr_normalization(series):
+    forms = with_rotations([series, inversion(series), retrograde(series), retrograde_inversion(series)])
+    return most_compact(forms)
 
-def with_rotations(forms):
-    return [x for y in forms for x in rotations(y)]
+def tiqsr_normalization(series):
+    forms = [series, inversion(series), retrograde(series), retrograde_inversion(series)]
+    for i in range(len(forms)):
+        forms.append(quart_circle(forms[i]))
+    forms = with_rotations(forms)
+    return most_compact(forms)
 
 def read_series(line):
     try:
@@ -78,7 +92,8 @@ methods = {
   "tir": tir_normalization,
   "ts": ts_normalization,
   "tis": tis_normalization,
-  "tisr": tisr_normalization
+  "tisr": tisr_normalization,
+  "tiqsr": tiqsr_normalization
 }
 
 def classify_from_file(method_name, file):

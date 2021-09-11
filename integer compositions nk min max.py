@@ -1,38 +1,32 @@
-def constrained_compositions(n, k, min_elem, max_elem, equiv=12):
-    allowed = range(min_elem, max_elem+1)
+def restricted_compositions(s, k, n):
+    allowed = range(1, n)
 
-    def update_sum(s, v, t):
-        if len(t)==0:
+    def restrict(r, alpha_j, alpha):
+        if len(alpha) == 0:
             return []
         else:
-            return [(x+v)%equiv for x in s] + [(t[-1]+v) % equiv]
-
-    def helper(n, k, t, s):
+            return [(summ+alpha_j)%n for summ in r] + [(alpha[-1]+alpha_j) % n]
+    
+    def compose(s, k, alpha = (), r = []):
         if k == 0:
-            if n == 0:
-                yield t
+            if s == 0:
+                yield alpha
         
-        elif not 0 in s:
-
+        elif not 0 in r:
             if k == 1:
-                if n in allowed:
-                    yield t + (n,)
-        
-            elif min_elem * k <= n <= max_elem * k:
-                for v in allowed:
-                    yield from helper(n - v, k - 1, t + (v,), update_sum(s, v, t))
+                if s in allowed:
+                    yield alpha + (s,)
+                
+            elif k <= s <= (n-1)*k:
+                for alpha_j in allowed:
+                    yield from compose(s - alpha_j, k - 1, alpha + (alpha_j,), restrict(r, alpha_j, alpha))
+    
+    return compose(s, k)
 
-    return helper(n, k, (), [])
-
-# Original
-'''
-for p in constrained_compositions(12, 3, 3, 7):
-    print(p)
-'''
 
 f = open('comp_of_24.txt', 'w')
 counter = 0
-for p in constrained_compositions(24, 12, 1, 11):
+for p in restricted_compositions(24, 12, 1, 11):
     f.write(f'{p}\n')
     counter+=1
 f.write(f'\nNUMBER OF SERIES: {counter}')

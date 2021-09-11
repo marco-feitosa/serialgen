@@ -1,27 +1,27 @@
 def restricted_compositions(s, k, n):
     allowed = range(1, n)
 
-    def restrict(r, alpha_j, alpha):
-        if len(alpha) == 0:
+    def restrict(r, part, composition):
+        if len(composition) == 0:
             return []
         else:
-            return [(summ+alpha_j)%n for summ in r] + [(alpha[-1]+alpha_j) % n]
+            return [(summation + part) % n for summation in r] + [(composition[-1] + part) % n]
     
-    def compose(s, k, alpha = (), r = []):
+    def compute(s, k, composition = (), r = []):
         if k == 0:
             if s == 0:
-                yield alpha
+                yield composition
         
         elif not 0 in r:
             if k == 1:
                 if s in allowed:
-                    yield alpha + (s,)
+                    yield composition + (s,)
                 
             elif k <= s <= (n-1)*k:
-                for alpha_j in allowed:
-                    yield from compose(s - alpha_j, k - 1, alpha + (alpha_j,), restrict(r, alpha_j, alpha))
+                for part in allowed:
+                    yield from compute(s - part, k - 1, composition + (part,), restrict(r, part, composition))
     
-    return compose(s, k)
+    return compute(s, k)
 
 
 f = open('comp_of_24.txt', 'w')

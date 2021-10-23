@@ -23,11 +23,14 @@ def restricted_compositions(s, k, n):
     
     return compute(s, k)
 
+s = 24
+k = 12
+n = 12
 
-f = open('comp_of_24.txt', 'w')
+f = open('interval_compositions_of_%s.txt' % s, 'w')
 counter = 0
-for p in restricted_compositions(24, 12, 1, 11):
+for p in restricted_compositions(s, k, n):
     f.write(f'{p}\n')
     counter+=1
-f.write(f'\nNUMBER OF SERIES: {counter}')
+f.write(f'\nTOTAL INTERVAL COMPOSITIONS OF {s}: {counter}')
 f.close()
